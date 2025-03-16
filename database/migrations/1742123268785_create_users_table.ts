@@ -8,10 +8,9 @@ export default class extends BaseSchema {
       table.uuid('id').primary().defaultTo(this.db.rawQuery('gen_random_uuid()').knexQuery)
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()
-      table.string('first_name').notNullable()
-      table.string('last_name').notNullable()
+      table.string('name').notNullable()
       table.string('email', 254).notNullable().unique()
-      table.string('provider_id').notNullable()
+      table.string('oauth_provider_id').notNullable()
     })
   }
 

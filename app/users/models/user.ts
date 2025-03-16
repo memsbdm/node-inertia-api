@@ -15,14 +15,11 @@ export default class User extends BaseModel {
   declare updatedAt: DateTime | null
 
   @column()
-  declare firstName: string
-
-  @column()
-  declare lastName: string
+  declare name: string
 
   @column()
   declare email: string
 
   @column()
-  declare providerID: string
+  declare oauthProviderID: string
 }
