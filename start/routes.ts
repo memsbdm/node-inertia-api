@@ -19,4 +19,8 @@ router.get('/oauth/google/callback', [SocialAuthController, 'callback'])
 router.delete('/auth/logout', [LogoutController, 'logout']).as('auth.logout')
 
 // API routes
-router.post('/api/oauth/google/callback', [SocialAuthController, 'apiCallback'])
+router
+  .group(() => {
+    router.post('/oauth/google/callback', [SocialAuthController, 'apiCallback'])
+  })
+  .prefix('/api/v1')
