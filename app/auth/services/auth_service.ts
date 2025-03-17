@@ -1,19 +1,55 @@
+import type { StoreRestaurantDto } from '#restaurants/restaurants/dtos/store_restaurant_dto'
+import { RestaurantService } from '#restaurants/restaurants/services/restaurant_service'
 import type { StoreUserDto } from '#users/dtos/store_user_dto'
 import type User from '#users/models/user'
 import { UserService } from '#users/services/user_service'
 import type { AccessToken } from '@adonisjs/auth/access_tokens'
 import { inject } from '@adonisjs/core'
+import { time } from 'console'
 
 @inject()
 export class AuthService {
-  constructor(private userSvc: UserService) {}
+  constructor(
+    private userSvc: UserService,
+    private restaurantSvc: RestaurantService
+  ) {}
 
-  findByProviderID(id: string): Promise<User | null> {
-    return this.userSvc.findByProviderID(id)
+  findByProviderId(id: string): Promise<User | null> {
+    return this.userSvc.findByProviderId(id)
   }
 
-  register(user: StoreUserDto): Promise<User> {
-    return this.userSvc.register(user)
+  async register(user: StoreUserDto, googleAccessToken: string): Promise<User> {
+    const createdUser = await this.userSvc.register(user)
+
+    const businesses: StoreRestaurantDto[] = [
+      {
+        userId: createdUser.id,
+        title: 'Mems Restaurant 1',
+        addressLine: '123 Main St',
+        locality: 'Anytown',
+        regionCode: 'CA',
+        postalCode: '12345',
+        storeCode: Math.random().toString(36).substring(2, 15),
+      },
+      {
+        userId: createdUser.id,
+        title: 'Mems Restaurant 2',
+        addressLine: '456 Main St',
+        locality: 'Anytown',
+        regionCode: 'CA',
+        postalCode: '12347',
+        storeCode: Math.random().toString(36).substring(2, 15),
+      },
+    ]
+    // TODO: Uncomment this when we have a way to get the businesses
+    // const businesses = await this.restaurantSvc.fetchGoogleBusinesses(
+    //   googleAccessToken,
+    //   createdUser.id
+    // )
+    await this.restaurantSvc.createMany(businesses)
+    const createdUserWithBusinesses = await this.userSvc.findById(createdUser.id)
+
+    return createdUserWithBusinesses!
   }
 
   generateAccessToken(user: User): Promise<AccessToken> {

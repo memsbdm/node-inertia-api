@@ -14,8 +14,12 @@
     "typecheck": "tsc --noEmit"
   },
   "imports": {
+    "#articles/*": "./app/restaurants/articles/*.js",
     "#auth/*": "./app/auth/*.js",
+    "#categories/*": "./app/restaurants/categories/*.js",
     "#core/*": "./app/core/*.js",
+    "#menus/*": "./app/restaurants/menus/*.js",
+    "#restaurants/*": "./app/restaurants/*.js",
     "#users/*": "./app/users/*.js",
     "#providers/*": "./providers/*.js",
     "#database/*": "./database/*.js",

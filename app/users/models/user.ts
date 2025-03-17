@@ -1,13 +1,15 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import { Opaque } from '@adonisjs/core/types/helpers'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import Restaurant from '#restaurants/restaurants/models/restaurant'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
 
-export type UserID = Opaque<'UserID', string>
+export type UserId = Opaque<'UserId', string>
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
-  declare id: UserID
+  declare id: UserId
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -22,7 +24,10 @@ export default class User extends BaseModel {
   declare email: string
 
   @column()
-  declare oauthProviderID: string
+  declare oauthProviderId: string
+
+  @hasMany(() => Restaurant)
+  declare restaurants: HasMany<typeof Restaurant>
 
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30 days',

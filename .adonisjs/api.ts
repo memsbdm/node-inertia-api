@@ -19,6 +19,22 @@ type AuthLogoutDelete = {
   request: unknown
   response: MakeTuyauResponse<import('../app/auth/controllers/logout_controller.ts').default['logout'], false>
 }
+type RestaurantsGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/list_restaurants_controller.ts').default['render'], false>
+}
+type RestaurantsIdEditGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/edit_restaurant_controller.ts').default['render'], false>
+}
+type RestaurantsIdDelete = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/delete_restaurant_controller.ts').default['execute'], false>
+}
+type ApiV1OauthGoogleCallbackPost = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/auth/controllers/social_auth_controller.ts').default['apiCallback'], false>
+}
 export interface ApiDefinition {
   'oauth': {
     'google': {
@@ -43,6 +59,36 @@ export interface ApiDefinition {
       '$delete': AuthLogoutDelete;
     };
   };
+  'restaurants': {
+    '$url': {
+    };
+    '$get': RestaurantsGetHead;
+    '$head': RestaurantsGetHead;
+    ':id': {
+      'edit': {
+        '$url': {
+        };
+        '$get': RestaurantsIdEditGetHead;
+        '$head': RestaurantsIdEditGetHead;
+      };
+      '$url': {
+      };
+      '$delete': RestaurantsIdDelete;
+    };
+  };
+  'api': {
+    'v1': {
+      'oauth': {
+        'google': {
+          'callback': {
+            '$url': {
+            };
+            '$post': ApiV1OauthGoogleCallbackPost;
+          };
+        };
+      };
+    };
+  };
 }
 const routes = [
   {
@@ -58,6 +104,27 @@ const routes = [
     path: '/auth/logout',
     method: ["DELETE"],
     types: {} as AuthLogoutDelete,
+  },
+  {
+    params: [],
+    name: 'restaurants.render',
+    path: '/restaurants',
+    method: ["GET","HEAD"],
+    types: {} as RestaurantsGetHead,
+  },
+  {
+    params: ["id"],
+    name: 'restaurants.edit',
+    path: '/restaurants/:id/edit',
+    method: ["GET","HEAD"],
+    types: {} as RestaurantsIdEditGetHead,
+  },
+  {
+    params: ["id"],
+    name: 'restaurants.delete',
+    path: '/restaurants/:id',
+    method: ["DELETE"],
+    types: {} as RestaurantsIdDelete,
   },
 ] as const;
 export const api = {

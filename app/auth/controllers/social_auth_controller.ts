@@ -13,19 +13,18 @@ export default class SocialAuthController {
 
   async callback({ ally, auth, response }: HttpContext) {
     const socialUser = await ally.use('google').user()
-    let user = await this.authSvc.findByProviderID(socialUser.id)
+    let user = await this.authSvc.findByProviderId(socialUser.id)
     if (!user) {
       const dto: StoreUserDto = {
         name: socialUser.name,
         email: socialUser.email,
-        oauthProviderID: socialUser.id,
+        oauthProviderId: socialUser.id,
       }
-
-      user = await this.authSvc.register(dto)
+      user = await this.authSvc.register(dto, socialUser.token.token)
     }
 
     await auth.use('web').login(user)
-    return response.redirect().toPath('/')
+    return response.redirect().toRoute('restaurants.render')
   }
 
   async apiCallback({ ally, response, request }: HttpContext) {
@@ -40,15 +39,15 @@ export default class SocialAuthController {
       })
     }
 
-    let user = await this.authSvc.findByProviderID(socialUser.id)
+    let user = await this.authSvc.findByProviderId(socialUser.id)
     if (!user) {
       const dto: StoreUserDto = {
         name: socialUser.name,
         email: socialUser.email,
-        oauthProviderID: socialUser.id,
+        oauthProviderId: socialUser.id,
       }
 
-      user = await this.authSvc.register(dto)
+      user = await this.authSvc.register(dto, token)
     }
 
     const accessToken = await this.authSvc.generateAccessToken(user)
