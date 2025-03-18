@@ -44,3 +44,4 @@ router
     router.post('/oauth/google/callback', [SocialAuthController, 'apiCallback'])
   })
   .prefix('/api/v1')
+  .middleware(middleware.forceJsonResponse())
