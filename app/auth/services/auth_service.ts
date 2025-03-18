@@ -5,7 +5,6 @@ import type User from '#users/models/user'
 import { UserService } from '#users/services/user_service'
 import type { AccessToken } from '@adonisjs/auth/access_tokens'
 import { inject } from '@adonisjs/core'
-import { time } from 'console'
 
 @inject()
 export class AuthService {
@@ -18,7 +17,7 @@ export class AuthService {
     return this.userSvc.findByProviderId(id)
   }
 
-  async register(user: StoreUserDto, googleAccessToken: string): Promise<User> {
+  async register(user: StoreUserDto, _: string): Promise<User> {
     const createdUser = await this.userSvc.register(user)
 
     const businesses: StoreRestaurantDto[] = [
