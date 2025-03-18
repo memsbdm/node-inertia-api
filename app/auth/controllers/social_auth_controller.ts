@@ -35,7 +35,7 @@ export default class SocialAuthController {
       socialUser = await ally.use('google').userFromToken(token)
     } catch (error) {
       return response.unauthorized({
-        error: 'Invalid token',
+        errors: ['Invalid Google access token'],
       })
     }
 

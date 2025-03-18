@@ -15,8 +15,8 @@ const DeleteRestaurantController = () =>
   import('#restaurants/restaurants/controllers/delete_restaurant_controller')
 const ListRestaurantsController = () =>
   import('#restaurants/restaurants/controllers/list_restaurants_controller')
-const EditRestaurantController = () =>
-  import('#restaurants/restaurants/controllers/edit_restaurant_controller')
+const UpdateRestaurantController = () =>
+  import('#restaurants/restaurants/controllers/update_restaurant_controller')
 // Web routes
 // Auth
 router.on('/').renderInertia('home').middleware(middleware.silentAuth())
@@ -30,18 +30,36 @@ router
   .middleware(middleware.auth())
   .as('restaurants.render')
 router
-  .get('/restaurants/:id/edit', [EditRestaurantController, 'render'])
+  .get('/restaurants/:id/update', [UpdateRestaurantController, 'render'])
   .middleware(middleware.auth())
-  .as('restaurants.edit')
+  .where('id', router.matchers.uuid())
+  .as('restaurants.update')
+router
+  .patch('/restaurants/:id', [UpdateRestaurantController, 'execute'])
+  .middleware(middleware.auth())
+  .where('id', router.matchers.uuid())
+  .as('restaurants.update.execute')
 router
   .delete('/restaurants/:id', [DeleteRestaurantController, 'execute'])
   .middleware(middleware.auth())
+  .where('id', router.matchers.uuid())
   .as('restaurants.delete')
 
 // API routes
 router
   .group(() => {
+    // OAuth
     router.post('/oauth/google/callback', [SocialAuthController, 'apiCallback'])
+
+    // Restaurants
+    router
+      .patch('/restaurants/:id', [UpdateRestaurantController, 'apiExecute'])
+      .middleware(middleware.auth({ guards: ['api'] }))
+      .where('id', router.matchers.uuid())
+    router
+      .delete('/restaurants/:id', [DeleteRestaurantController, 'apiExecute'])
+      .middleware(middleware.auth({ guards: ['api'] }))
+      .where('id', router.matchers.uuid())
   })
   .prefix('/api/v1')
   .middleware(middleware.forceJsonResponse())

@@ -3,6 +3,9 @@ import { inject } from '@adonisjs/core'
 import { RestaurantRepository } from '#restaurants/restaurants/repositories/restaurant_repository'
 import type { StoreRestaurantDto } from '#restaurants/restaurants/dtos/store_restaurant_dto'
 import type { RestaurantId } from '#restaurants/restaurants/models/restaurant'
+import type { UpdateRestaurantDto } from '#restaurants/restaurants/dtos/update_restaurant_dto'
+import type Restaurant from '#restaurants/restaurants/models/restaurant'
+
 @inject()
 export class RestaurantService {
   constructor(private repository: RestaurantRepository) {}
@@ -11,23 +14,19 @@ export class RestaurantService {
     return this.repository.getByUserId(userId)
   }
 
-  async getById(restaurantId: RestaurantId, userId: UserId) {
-    const restaurant = await this.repository.getById(restaurantId)
-    if (restaurant.userId !== userId) {
-      // TODO: Handle this
-    }
-    return restaurant
+  async getById(restaurantId: RestaurantId): Promise<Restaurant | null> {
+    return this.repository.getById(restaurantId)
   }
 
-  createMany(restaurants: StoreRestaurantDto[]) {
+  createMany(restaurants: StoreRestaurantDto[]): Promise<Restaurant[]> {
     return this.repository.createMany(restaurants)
   }
 
-  async delete(restaurantId: RestaurantId, userId: UserId) {
-    const restaurant = await this.repository.getById(restaurantId)
-    if (restaurant.userId !== userId) {
-      // TODO: Handle this
-    }
+  update(restaurant: Restaurant, dto: UpdateRestaurantDto): Promise<Restaurant> {
+    return this.repository.update(restaurant, dto)
+  }
+
+  delete(restaurant: Restaurant): Promise<void> {
     return this.repository.delete(restaurant)
   }
 

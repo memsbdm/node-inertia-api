@@ -23,9 +23,13 @@ type RestaurantsGetHead = {
   request: unknown
   response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/list_restaurants_controller.ts').default['render'], false>
 }
-type RestaurantsIdEditGetHead = {
+type RestaurantsIdUpdateGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/edit_restaurant_controller.ts').default['render'], false>
+  response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/update_restaurant_controller.ts').default['render'], false>
+}
+type RestaurantsIdPatch = {
+  request: MakeTuyauRequest<InferInput<typeof import('../app/restaurants/restaurants/controllers/update_restaurant_controller.ts').default['UpdateValidator']>>
+  response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/update_restaurant_controller.ts').default['execute'], true>
 }
 type RestaurantsIdDelete = {
   request: unknown
@@ -34,6 +38,14 @@ type RestaurantsIdDelete = {
 type ApiV1OauthGoogleCallbackPost = {
   request: unknown
   response: MakeTuyauResponse<import('../app/auth/controllers/social_auth_controller.ts').default['apiCallback'], false>
+}
+type ApiV1RestaurantsIdUpdatePatch = {
+  request: MakeTuyauRequest<InferInput<typeof import('../app/restaurants/restaurants/controllers/update_restaurant_controller.ts').default['UpdateValidator']>>
+  response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/update_restaurant_controller.ts').default['apiExecute'], true>
+}
+type ApiV1RestaurantsIdDelete = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/restaurants/restaurants/controllers/delete_restaurant_controller.ts').default['apiExecute'], false>
 }
 export interface ApiDefinition {
   'oauth': {
@@ -65,14 +77,15 @@ export interface ApiDefinition {
     '$get': RestaurantsGetHead;
     '$head': RestaurantsGetHead;
     ':id': {
-      'edit': {
+      'update': {
         '$url': {
         };
-        '$get': RestaurantsIdEditGetHead;
-        '$head': RestaurantsIdEditGetHead;
+        '$get': RestaurantsIdUpdateGetHead;
+        '$head': RestaurantsIdUpdateGetHead;
       };
       '$url': {
       };
+      '$patch': RestaurantsIdPatch;
       '$delete': RestaurantsIdDelete;
     };
   };
@@ -85,6 +98,18 @@ export interface ApiDefinition {
             };
             '$post': ApiV1OauthGoogleCallbackPost;
           };
+        };
+      };
+      'restaurants': {
+        ':id': {
+          'update': {
+            '$url': {
+            };
+            '$patch': ApiV1RestaurantsIdUpdatePatch;
+          };
+          '$url': {
+          };
+          '$delete': ApiV1RestaurantsIdDelete;
         };
       };
     };
@@ -114,10 +139,17 @@ const routes = [
   },
   {
     params: ["id"],
-    name: 'restaurants.edit',
-    path: '/restaurants/:id/edit',
+    name: 'restaurants.update',
+    path: '/restaurants/:id/update',
     method: ["GET","HEAD"],
-    types: {} as RestaurantsIdEditGetHead,
+    types: {} as RestaurantsIdUpdateGetHead,
+  },
+  {
+    params: ["id"],
+    name: 'restaurants.update.execute',
+    path: '/restaurants/:id',
+    method: ["PATCH"],
+    types: {} as RestaurantsIdPatch,
   },
   {
     params: ["id"],

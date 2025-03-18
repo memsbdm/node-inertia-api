@@ -45,7 +45,7 @@ const links = ref([
     <UPageGrid>
       <UPageCard v-for="(card, index) in cards" :key="index" v-bind="card">
         <UContainer class="flex gap-3 px-0! mx-0!">
-          <Link :href="tuyau.$url('restaurants.edit', { params: { id: card.id } })">
+          <Link :href="tuyau.$url('restaurants.update', { params: { id: card.id } })">
             <UButton icon="i-lucide-edit" variant="soft" color="primary" size="xl"
               >Manage</UButton
             ></Link
