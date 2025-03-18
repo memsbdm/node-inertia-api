@@ -22,7 +22,7 @@ const form = useForm({
 })
 
 function onSubmit() {
-  form.patch(tuyau.$url('restaurants.update', { params: { id: props.restaurant.id } }))
+  form.patch(tuyau.$url('restaurants.update.execute', { params: { id: props.restaurant.id } }))
 }
 </script>
 
